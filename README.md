@@ -24,10 +24,15 @@ This project solves the problem of slow and noisy medical data analysis in emerg
 
 ## 🧩 How It Works
 
-1. User enters symptoms
-2. FAISS retrieves relevant records
-3. Context pruning reduces noise (1000 → 2–3 records)
-4. LLM generates severity, action, and reasoning
+1. Doctor signs up / logs into the system
+2. Doctor enters patient symptoms
+3. FAISS retrieves relevant medical records
+4. Intelligent context pruning reduces noise (1000 → 2–3 records)
+5. LLM generates:
+
+   * Severity (HIGH / MEDIUM / LOW)
+   * Recommended action
+   * Reasoning
 
 ---
 
@@ -80,4 +85,3 @@ Open:
 Reduces large medical datasets to minimal relevant context using intelligent pruning for real-time decision-making.
 
 ---
-
