@@ -13,8 +13,15 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 # Load data
 data = fetch_data()
 texts = [item["text"] for item in data]
-
-model = SentenceTransformer('all-MiniLM-L6-v2')
+# 🔥 SAFE MODEL LOADING
+def load_model():
+    try:
+        print("Loading model (online)...")
+        return SentenceTransformer('all-MiniLM-L6-v2')
+    except Exception as e:
+        print("⚠️ Online failed, using offline cache...")
+        return SentenceTransformer('all-MiniLM-L6-v2', local_files_only=True)
+model = load_model()
 embeddings = model.encode(texts)
 
 dimension = embeddings.shape[1]

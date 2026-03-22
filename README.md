@@ -58,6 +58,9 @@ cd ai-triage-assistant
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
+
+# First-time setup (download model)
+python model.py  # run once to download and cache the embedding model
 ```
 
 Create `.env`:
@@ -85,3 +88,7 @@ Open:
 Reduces large medical datasets to minimal relevant context using intelligent pruning for real-time decision-making.
 
 ---
+
+## 👩‍💻 Author
+
+Vaishnavi Deshmukh
