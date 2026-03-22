@@ -3,7 +3,6 @@ import mysql.connector
 import os
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 conn = mysql.connector.connect(
@@ -22,17 +21,23 @@ symptoms = [
 
 types = ["cardiac", "emergency", "irrelevant", "chronic"]
 
+# 🔥 Create 50 patients
+patient_names = [f"Patient_{i}" for i in range(1, 51)]
+
 for i in range(1000):
-    text = f"Patient has {random.choice(symptoms)} with {random.choice(['mild','severe','sudden'])} condition"
+    patient_id = random.randint(1, 50)
+    patient_name = patient_names[patient_id - 1]
+
+    text = f"{patient_name} has {random.choice(symptoms)} with {random.choice(['mild','severe','sudden'])} condition"
     year = random.randint(2010, 2025)
     t = random.choice(types)
 
     cursor.execute(
-        "INSERT INTO patient_history (text, year, type) VALUES (%s, %s, %s)",
-        (text, year, t)
+        "INSERT INTO patient_history (patient_id, patient_name, text, year, type) VALUES (%s, %s, %s, %s, %s)",
+        (patient_id, patient_name, text, year, t)
     )
 
 conn.commit()
 conn.close()
 
-print("✅ 1000 records inserted")
+print("✅ 1000 patient records inserted successfully")

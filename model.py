@@ -30,10 +30,16 @@ index.add(np.array(embeddings))
 
 
 # 🔍 SEARCH
-def search(query, k=5):
+def search(query, patient_id=None, k=5):
     query_embedding = model.encode([query])
     D, I = index.search(np.array(query_embedding), k)
-    return [data[i] for i in I[0]]
+
+    results = [data[i] for i in I[0]]
+
+    if patient_id:
+        results = [r for r in results if r["patient_id"] == patient_id]
+
+    return results
 
 
 # ✂️ CONTEXT PRUNING
@@ -104,8 +110,8 @@ Format:
 
 
 # 🚀 PIPELINE
-def process_query(query):
-    results = search(query)
+def process_query(query, patient_id=None):
+    results = search(query, patient_id)
     pruned = prune_context(results)
 
     context_text = " ".join(pruned)

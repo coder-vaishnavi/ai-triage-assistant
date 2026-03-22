@@ -59,7 +59,8 @@ python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 
-# First-time setup (download model)
+# First-time setup
+python data_loader.py
 python model.py  # run once to download and cache the embedding model
 ```
 
@@ -73,7 +74,6 @@ DB_PASSWORD=your_mysql_password
 Run:
 
 ```bash
-python data_loader.py
 python app.py
 ```
 
@@ -89,6 +89,4 @@ Reduces large medical datasets to minimal relevant context using intelligent pru
 
 ---
 
-## 👩‍💻 Author
 
-Vaishnavi Deshmukh

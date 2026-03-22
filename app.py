@@ -7,7 +7,8 @@ import re
 import time
 
 app = Flask(__name__)
-app.secret_key = "secret123"  # change later for security
+app.secret_key = "secret123"
+
 
 # ===================== HOME =====================
 @app.route("/")
@@ -65,7 +66,6 @@ def dashboard():
     return render_template("dashboard.html", user=session["user"])
 
 
-
 # ===================== JSON EXTRACT =====================
 
 def extract_json(text):
@@ -82,11 +82,15 @@ def triage():
     if "user" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
-    query = request.json.get("query")
+    data = request.json
+
+    query = data.get("query")
+    patient_id = data.get("patient_id")  # 🔥 NEW
 
     start = time.time()
 
-    llm_output, context = process_query(query)
+    # 🔥 pass patient_id to model
+    llm_output, context = process_query(query, patient_id)
 
     end = time.time()
     latency = round((end - start) * 1000, 2)
@@ -119,7 +123,7 @@ def triage():
 
     cursor.execute(
         "INSERT INTO patients (name, symptoms, diagnosis) VALUES (%s, %s, %s)",
-        (session["user"]["name"], query, parsed["severity"])
+        (f"Patient_{patient_id}", query, parsed["severity"])
     )
 
     conn.commit()

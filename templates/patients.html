@@ -8,28 +8,63 @@
 <div class="sidebar">
     <h2>🏥 AI Triage</h2>
     <a href="/dashboard">🏠 Dashboard</a>
-    
     <a href="/patients">📋 Patients</a>
     <a href="/logout">🚪 Logout</a>
 </div>
 
 <div class="main">
-    <h1>Triage Assistant</h1>
+    <h1>📋 Patient History</h1>
 
-    <input id="query" placeholder="Enter symptoms">
-    <button onclick="sendQuery()">Analyze</button>
+    <!-- 🔥 ANALYZE PATIENT -->
+    <div class="card">
+        <h3>🔍 Analyze Patient</h3>
+        <input id="patient_id" placeholder="Enter Patient ID">
+        <input id="query" placeholder="Enter symptoms">
+        <button onclick="analyzePatient()">Analyze</button>
+    </div>
 
-    <div id="result"></div>
+    <!-- 🔥 RESULT -->
+    <div id="result" style="margin-top:20px;"></div>
+
+    <!-- 🔥 PATIENT TABLE -->
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Symptoms</th>
+            <th>Diagnosis</th>
+            <th>Date</th>
+        </tr>
+
+        {% for p in patients %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.symptoms }}</td>
+            <td>{{ p.diagnosis }}</td>
+            <td>{{ p.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 
 <script>
-async function sendQuery() {
+async function analyzePatient() {
+    const patient_id = document.getElementById("patient_id").value;
     const query = document.getElementById("query").value;
+
+    if (!patient_id || !query) {
+        alert("Enter Patient ID and Symptoms");
+        return;
+    }
 
     const res = await fetch("/triage", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({query})
+        body: JSON.stringify({
+            patient_id: patient_id,
+            query: query
+        })
     });
 
     const data = await res.json();
@@ -39,14 +74,24 @@ async function sendQuery() {
     if (data.severity === "MEDIUM") color = "orange";
 
     document.getElementById("result").innerHTML = `
-        <h2 style="color:${color}">🚨 ${data.severity}</h2>
-        <p><b>Action:</b> ${data.action}</p>
-        <p><b>Reason:</b> ${data.reason}</p>
+        <div style="border:1px solid #ccc; padding:15px; border-radius:10px;">
+            <h2 style="color:${color}">🚨 ${data.severity}</h2>
 
-        <p><b>Latency:</b> ${data.latency} ms</p>
+            <p><b>Patient ID:</b> ${patient_id}</p>
+            <p><b>Symptoms:</b> ${query}</p>
 
-        <h4>Context:</h4>
-        <ul>${data.context.map(c => `<li>${c}</li>`).join("")}</ul>
+            <p><b>Action:</b> ${data.action}</p>
+            <p><b>Reason:</b> ${data.reason}</p>
+
+            <p><b>Latency:</b> ${data.latency} ms</p>
+
+            <p><b>Records Reduced:</b> ${data.original_records} → ${data.pruned_records}</p>
+
+            <h4>Relevant Context:</h4>
+            <ul>
+                ${data.context.map(c => `<li>${c}</li>`).join("")}
+            </ul>
+        </div>
     `;
 }
 </script>
