@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🏥 AI Triage</h2>
+
+    <a href="/dashboard">🏠 Dashboard</a>
+    
+    <a href="/patients">📋 Patients</a>
+    <a href="#">👤 Profile</a>
+    <a href="/logout">🚪 Logout</a>
+</div>
+
+<div class="main">
+    <h1>Welcome Dr. {{ user.name }}</h1>
+    <p>Specialization: {{ user.specialization }}</p>
+</div>
+
+</body>
+</html>

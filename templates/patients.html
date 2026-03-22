@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🏥 AI Triage</h2>
+    <a href="/dashboard">🏠 Dashboard</a>
+    
+    <a href="/patients">📋 Patients</a>
+    <a href="/logout">🚪 Logout</a>
+</div>
+
+<div class="main">
+    <h1>Triage Assistant</h1>
+
+    <input id="query" placeholder="Enter symptoms">
+    <button onclick="sendQuery()">Analyze</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+async function sendQuery() {
+    const query = document.getElementById("query").value;
+
+    const res = await fetch("/triage", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({query})
+    });
+
+    const data = await res.json();
+
+    let color = "green";
+    if (data.severity === "HIGH") color = "red";
+    if (data.severity === "MEDIUM") color = "orange";
+
+    document.getElementById("result").innerHTML = `
+        <h2 style="color:${color}">🚨 ${data.severity}</h2>
+        <p><b>Action:</b> ${data.action}</p>
+        <p><b>Reason:</b> ${data.reason}</p>
+
+        <p><b>Latency:</b> ${data.latency} ms</p>
+
+        <h4>Context:</h4>
+        <ul>${data.context.map(c => `<li>${c}</li>`).join("")}</ul>
+    `;
+}
+</script>
+
+</body>
+</html>
